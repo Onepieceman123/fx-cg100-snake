@@ -1,6 +1,6 @@
 from casioplot import *
 from random import randint
-# Graphics + skins for snake15.py v1.5 (keep both files on the calculator)
+# Graphics + skins for snake16.py v1.6 (keep both files on the calculator)
 CELL=12
 G1=(132,204,82);G2=(116,190,70);GB=(88,158,54);GL=(160,222,110)
 BL=((2,3),(3,2),(8,7),(9,6),(5,9));HL=((3,3),(9,7))
@@ -239,10 +239,20 @@ GREEN=(35,150,55);SOFT=(150,150,150)
 def tri(x,y,dr,col):
   for i in range(5):
     box(x+(i if dr>0 else 4-i),y+i,1,9-2*i,col)
+def ink(p):
+  return p is not None and p[0]+p[1]+p[2]<600
 def chip(x,y,lab,col):
-  w=len(lab)*6+8
-  box(x,y,w,13,col);draw_string(x+4,y+1,lab,WHITE,"small")
-  return x+w+5
+  # draw the text once, measure where its pixels really are, then frame it evenly
+  box(x-2,y-3,len(lab)*12+8,min(19,189-y),WHITE);draw_string(x+3,y+1,lab,TXT,"small")
+  x0=999;x1=-1;y0=999;y1=-1
+  for xx in range(x+3,min(383,x+4+len(lab)*12)):
+    for yy in range(y,min(191,y+15)):
+      if ink(get_pixel(xx,yy)):
+        x0=min(x0,xx);x1=max(x1,xx);y0=min(y0,yy);y1=max(y1,yy)
+  if x1<0:
+    return x+20
+  box(x0-4,y0-3,x1-x0+9,min(y1-y0+7,189-y0),col);draw_string(x+3,y+1,lab,WHITE,"small")
+  return x1+10
 def cursor(x,y,col):
   box(x,y,10,10,col);box(x+5,y+2,4,3,WHITE);box(x+7,y+3,2,2,EYE)
 def tick(x,y,ok):

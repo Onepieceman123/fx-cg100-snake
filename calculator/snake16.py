@@ -1,8 +1,8 @@
 from casioplot import *
 from random import randint
-from sgfx15 import *
-# SNAKE v1.5 for fx-CG100 - made by Bilal Taha
-# Needs sgfx15.py on the calculator too. Arrows move, OK pauses, AC quits.
+from sgfx16 import *
+# SNAKE v1.6 for fx-CG100 - made by Bilal Taha
+# Needs sgfx16.py on the calculator too. Arrows move, OK pauses, AC quits.
 # DELAY: raise it if every speed is too fast, lower it if too slow.
 COLS=32;ROWS=15;DELAY=2500;POLLS=4;BUG_LIFE=30
 UP=14;DOWN=34;LEFT=23;RIGHT=25;OK=24;EXE=95
@@ -176,10 +176,12 @@ def skinparts():
   x=chip(58,146,"EXE",CUR[0]);draw_string(x,146,"Start",TXT,"small")
   x=chip(160,146,"OK",CUR[0]);draw_string(x,146,"Stats",TXT,"small")
   x=chip(256,146,"AC",CUR[0]);draw_string(x,146,"Quit",TXT,"small")
-def title(mode,spd,sk,best):
-  skin(sk);GRASS[0]=False;menubg()
+def menu_static():
+  GRASS[0]=False;menubg()
   draw_string(286,40,"by Bilal Taha",GREY,"small")
   draw_string(88,166,"Up/Down select    Left/Right change",SOFT,"small")
+def title(mode,spd,sk,best):
+  skin(sk);menu_static()
   row=0;old=None
   while True:
     v=[MODES[mode],str(spd),SKINS[sk][0]]
@@ -209,15 +211,16 @@ def title(mode,spd,sk,best):
         sk=(sk+s)%len(SKINS)
       wait_release(k)
     elif k==OK:
-      wait_release(k);stats(best);return title(mode,spd,sk,best)
+      wait_release(k);stats(best);skin(sk);menu_static();old=None
     elif k==EXE:
       wait_release(k);skin(sk);return mode,spd,sk
 def stats(best):
   clear_screen();band();h=CUR[0]
   draw_string(170,0,"STATS",WHITE,"small");draw_string(300,0,"by Bilal Taha",(170,200,170),"small")
   S=STATS
-  for i,(lab,val) in enumerate((("Games",S["games"]),("Apples",S["apples"]),("Bugs",S["bugs"]),("Longest",S["longest"]))):
-    x=6+i*95
+  cards=(("Games",S["games"]),("Apples",S["apples"]),("Bugs",S["bugs"]),("Longest",S["longest"]))
+  for i in range(4):
+    lab=cards[i][0];val=cards[i][1];x=6+i*95
     frame(x,16,88,36,LINE);box(x+1,17,86,3,h)
     v=str(val);draw_string(x+44-len(v)*5,18,v,TXT,"large")
     draw_string(x+44-len(lab)*3,39,lab,GREY,"small")
@@ -231,8 +234,8 @@ def stats(best):
     tick(x,y+2,GOT[i])
     draw_string(x+16,y,ACH[i][0],GREEN if GOT[i] else GREY,"small")
     draw_string(x+16,y+10,ACH[i][1],SOFT,"small")
-  draw_string(6,180,"Stats reset when you quit or power off",RED,"small")
-  x=chip(300,179,"OK",h);draw_string(x,180,"Back",TXT,"small")
+  draw_string(6,178,"Stats reset when you quit or power off",RED,"small")
+  x=chip(300,177,"OK",h);draw_string(x,178,"Back",TXT,"small")
   show_screen()
   while getkey()!=OK:
     pass

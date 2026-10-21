@@ -35,12 +35,12 @@ It's written in MicroPython with Casio's built-in `casioplot` module, so it runs
 ## 📥 Install
 
 1. Download the two files from the [`calculator`](calculator) folder:
-   - `snake15.py`: the game
-   - `sgfx15.py`: graphics and skins
+   - `snake16.py`: the game
+   - `sgfx16.py`: graphics and skins
 2. Connect the calculator to your computer with a USB cable and choose **USB Flash** on the calculator.
 3. Copy **both** files to the **top level** of the calculator drive, not into a folder.
 4. Eject the drive on your computer, wait for **"Complete!"** on the calculator, press **OK**, then unplug.
-5. On the calculator, go to **HOME → Python → TOOLS → File → Open**, pick **`snake15.py`** and run it.
+5. On the calculator, go to **HOME → Python → TOOLS → File → Open**, pick **`snake16.py`** and run it.
 
 ## 🎮 Controls
 
@@ -73,10 +73,10 @@ sudo apt install python3-tk python3-pil
 
 # run it
 cd calculator
-PYTHONPATH=../pc-simulator python3 snake15.py
+PYTHONPATH=../pc-simulator python3 snake16.py
 ```
 
-On Windows or Mac, install Python and `pip install pillow`, then copy `casioplot.py` into the `calculator` folder and run `python snake15.py`.
+On Windows or Mac, install Python and `pip install pillow`, then copy `casioplot.py` into the `calculator` folder and run `python snake16.py`.
 
 PC keys: arrows = arrows, Enter = EXE, Space or O = OK, Esc = quit.
 
@@ -84,11 +84,11 @@ PC keys: arrows = arrows, Enter = EXE, Space or O = OK, Esc = quit.
 
 ## ⚙️ Tuning
 
-If every speed feels too fast or too slow on your calculator, change `DELAY=2500` near the top of `snake15.py`. A higher number makes the game slower.
+If every speed feels too fast or too slow on your calculator, change `DELAY=2500` near the top of `snake16.py`. A higher number makes the game slower.
 
 ## 📝 Versions
 
-Calculator file names can't contain dots, so the version is in the name: `snake15.py` + `sgfx15.py` = **v1.5**. To update, delete the old pair from the calculator and copy the new pair.
+Calculator file names can't contain dots, so the version is in the name: `snake16.py` + `sgfx16.py` = **v1.6**. To update, delete the old pair from the calculator and copy the new pair.
 
 ## 📄 License
 
