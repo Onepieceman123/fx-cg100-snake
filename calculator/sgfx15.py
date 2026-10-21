@@ -1,6 +1,6 @@
 from casioplot import *
 from random import randint
-# Graphics + skins for snake14.py v1.4 (keep both files on the calculator)
+# Graphics + skins for snake15.py v1.5 (keep both files on the calculator)
 CELL=12
 G1=(132,204,82);G2=(116,190,70);GB=(88,158,54);GL=(160,222,110)
 BL=((2,3),(3,2),(8,7),(9,6),(5,9));HL=((3,3),(9,7))
@@ -227,7 +227,7 @@ def menubg():
   clear_screen()
   for y in range(4,186,8):
     for x in range((y//8)%2*4+2,384,8):
-      if not (54<=x<=330 and 50<=y<=146):
+      if not (44<=x<=340 and 48<=y<=178):
         set_pixel(x,y,(200,225,190))
   for x in range(384):
     for y in range(186,192):
@@ -235,3 +235,20 @@ def menubg():
     if x%7==0:
       set_pixel(x,185,G2);set_pixel(x,184,GB)
       set_pixel(x+2 if x<382 else x,185,G1)
+GREEN=(35,150,55);SOFT=(150,150,150)
+def tri(x,y,dr,col):
+  for i in range(5):
+    box(x+(i if dr>0 else 4-i),y+i,1,9-2*i,col)
+def chip(x,y,lab,col):
+  w=len(lab)*6+8
+  box(x,y,w,13,col);draw_string(x+4,y+1,lab,WHITE,"small")
+  return x+w+5
+def cursor(x,y,col):
+  box(x,y,10,10,col);box(x+5,y+2,4,3,WHITE);box(x+7,y+3,2,2,EYE)
+def tick(x,y,ok):
+  if ok:
+    box(x,y,10,10,GREEN)
+    for (u,v) in ((2,5),(3,6),(4,7),(5,6),(6,5),(7,4),(8,3)):
+      set_pixel(x+u,y+v,WHITE)
+  else:
+    frame(x,y,10,10,SOFT)

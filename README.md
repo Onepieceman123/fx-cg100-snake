@@ -8,9 +8,11 @@ It's written in MicroPython with Casio's built-in `casioplot` module, so it runs
 
 <p align="center"><img src="screenshots/gameplay.gif" alt="Snake gameplay" width="768"></p>
 
-| Title screen | Maze mode | Game over |
-|---|---|---|
-| ![Title screen](screenshots/title.png) | ![Maze mode](screenshots/maze.png) | ![Game over](screenshots/gameover.png) |
+| Menu | Stats & achievements |
+|---|---|
+| ![Menu](screenshots/title.png) | ![Stats](screenshots/stats.png) |
+| **Maze mode** | **Game over** |
+| ![Maze mode](screenshots/maze.png) | ![Game over](screenshots/gameover.png) |
 
 **9 skins**, and the logo changes colour to match:
 
@@ -22,24 +24,23 @@ It's written in MicroPython with Casio's built-in `casioplot` module, so it runs
 
 ## ✨ Features
 
-- **3 modes:** Classic (walls kill you), Wrap (leave one edge, come back on the other) and Maze (4 wall layouts that change as you level up)
+- **3 modes:** Classic (walls kill you), Wrap (leave one edge, come back on the other) and Maze (one of 4 wall layouts, picked at random each game)
 - **Nokia-style scoring:** every apple is worth your current speed, from 1 to 9 points
-- **Levels:** every 10 apples the snake speeds up and apples are worth more
 - **Bonus bug:** appears every 5 apples. The faster you catch it, the more it's worth, and if you miss one the next is worth more
 - **9 skins:** Classic, Python, Royal, Fire, Ice, Gold, Grape, Pink and Rainbow, each with its own pattern. The SNAKE logo changes colour to match
 - **Textured grass field**, flicking tongue, pulsing apples, wiggling bugs
 - **Death animation:** the head flashes, the body bursts and a little ghost floats away
-- **8 achievements** and a stats screen
+- **8 achievements** and a stats screen with your totals, best scores and progress
 
 ## 📥 Install
 
 1. Download the two files from the [`calculator`](calculator) folder:
-   - `snake14.py`: the game
-   - `sgfx14.py`: graphics and skins
+   - `snake15.py`: the game
+   - `sgfx15.py`: graphics and skins
 2. Connect the calculator to your computer with a USB cable and choose **USB Flash** on the calculator.
 3. Copy **both** files to the **top level** of the calculator drive, not into a folder.
 4. Eject the drive on your computer, wait for **"Complete!"** on the calculator, press **OK**, then unplug.
-5. On the calculator, go to **HOME → Python → TOOLS → File → Open**, pick **`snake14.py`** and run it.
+5. On the calculator, go to **HOME → Python → TOOLS → File → Open**, pick **`snake15.py`** and run it.
 
 ## 🎮 Controls
 
@@ -72,10 +73,10 @@ sudo apt install python3-tk python3-pil
 
 # run it
 cd calculator
-PYTHONPATH=../pc-simulator python3 snake14.py
+PYTHONPATH=../pc-simulator python3 snake15.py
 ```
 
-On Windows or Mac, install Python and `pip install pillow`, then copy `casioplot.py` into the `calculator` folder and run `python snake14.py`.
+On Windows or Mac, install Python and `pip install pillow`, then copy `casioplot.py` into the `calculator` folder and run `python snake15.py`.
 
 PC keys: arrows = arrows, Enter = EXE, Space or O = OK, Esc = quit.
 
@@ -83,11 +84,11 @@ PC keys: arrows = arrows, Enter = EXE, Space or O = OK, Esc = quit.
 
 ## ⚙️ Tuning
 
-If every speed feels too fast or too slow on your calculator, change `DELAY=2500` near the top of `snake14.py`. A higher number makes the game slower.
+If every speed feels too fast or too slow on your calculator, change `DELAY=2500` near the top of `snake15.py`. A higher number makes the game slower.
 
 ## 📝 Versions
 
-Calculator file names can't contain dots, so the version is in the name: `snake14.py` + `sgfx14.py` = **v1.4**. To update, delete the old pair from the calculator and copy the new pair.
+Calculator file names can't contain dots, so the version is in the name: `snake15.py` + `sgfx15.py` = **v1.5**. To update, delete the old pair from the calculator and copy the new pair.
 
 ## 📄 License
 

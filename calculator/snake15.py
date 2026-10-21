@@ -1,23 +1,24 @@
 from casioplot import *
 from random import randint
-from sgfx14 import *
-# SNAKE v1.4 for fx-CG100 - made by Bilal Taha
-# Needs sgfx14.py on the calculator too. Arrows move, OK pauses, AC quits.
+from sgfx15 import *
+# SNAKE v1.5 for fx-CG100 - made by Bilal Taha
+# Needs sgfx15.py on the calculator too. Arrows move, OK pauses, AC quits.
 # DELAY: raise it if every speed is too fast, lower it if too slow.
 COLS=32;ROWS=15;DELAY=2500;POLLS=4;BUG_LIFE=30
 UP=14;DOWN=34;LEFT=23;RIGHT=25;OK=24;EXE=95
 DIRS={UP:(0,-1),DOWN:(0,1),LEFT:(-1,0),RIGHT:(1,0),62:(0,-1),82:(0,1),71:(-1,0),73:(1,0)}
 MODES=["Classic","Wrap","Maze"]
+DESC=["Walls kill you","Go through the walls","Dodge the stone walls"]
 START=[(6,10),(5,10),(4,10),(3,10)]
-ACH=[("Snack Time","Eat 10 apples in one game"),("Big Snake","Reach length 30"),
-("Bug Hunter","Catch 3 bugs in one game"),("Speed Demon","Reach speed 9"),
-("Explorer","Reach level 4"),("Century","Score 100 points"),
-("Legend","Score 500 points"),("Maze Runner","Reach level 3 in Maze")]
+ACH=[("Snack Time","10 apples in a game"),("Big Snake","Reach length 30"),
+("Bug Hunter","3 bugs in a game"),("Speed Demon","10 apples at speed 9"),
+("Feast","40 apples in a game"),("Century","Score 100"),
+("Legend","Score 500"),("Maze Runner","Score 100 in Maze")]
 GOT=[False]*8
 STATS={"games":0,"apples":0,"bugs":0,"longest":0}
 def check(g):
-  t=[g["apples"]>=10,g["len"]>=30,g["bugs"]>=3,g["spd"]>=9,g["lvl"]>=4,
-     g["score"]>=100,g["score"]>=500,g["mode"]==2 and g["lvl"]>=3]
+  t=[g["apples"]>=10,g["len"]>=30,g["bugs"]>=3,g["spd"]>=9 and g["apples"]>=10,g["apples"]>=40,
+     g["score"]>=100,g["score"]>=500,g["mode"]==2 and g["score"]>=100]
   new=[]
   for i in range(8):
     if t[i] and not GOT[i]:
@@ -27,7 +28,7 @@ def bar(st,col):
   draw_string(2,0,"Score "+str(st[0]),col,"small")
   draw_string(95,0,"Best "+str(st[1]),col,"small")
   draw_string(180,0,"Spd "+str(st[2]),col,"small")
-  draw_string(240,0,"Lv "+str(st[3]),col,"small")
+  draw_string(240,0,"Apples "+str(st[3]),col,"small")
 def maze(n):
   w=set();k=(n-1)%4
   if k==0:
@@ -66,12 +67,6 @@ def items(snake,d,cols,food,walls,bc):
   draw_snake(snake,d,cols)
 def board(snake,d,cols,food,walls,st):
   GRASS[0]=True;band();bar(st,WHITE);field();items(snake,d,cols,food,walls,None);show_screen()
-def overlay(lines,dl,snake,d,cols,food,walls,bc):
-  panel(92,64,200,64)
-  for (s,y,col,size) in lines:
-    draw_string(192-len(s)*(9 if size=="large" else 4),y,s,col,size)
-  show_screen();wait(dl)
-  ground(92,64,200,64);items(snake,d,cols,food,walls,bc);show_screen()
 def ready():
   draw_string(290,0,"Arrow = go",(255,220,80),"small");show_screen()
   k=getkey()
@@ -87,11 +82,11 @@ def pause(st):
   wait_release(OK)
   draw_string(2,0,"PAUSED - press OK",BAND,"small");bar(st,WHITE);show_screen()
 def play(mode,spd,best):
-  lvl=1;walls=maze(1) if mode==2 else set()
+  walls=maze(randint(1,4)) if mode==2 else set()
   snake=list(START);d=(1,0);cols=mkcols(3)
   food=place(snake,walls,())
   bc=None;bt=0;bw=0;bbase=5*spd;foods=0;score=0;bugs=0;tg=[];mv=0;maxlen=4
-  st=[score,best,spd,lvl]
+  st=[score,best,spd,foods]
   board(snake,d,cols,food,walls,st);last=ready()
   queue=[] if DIRS[last] in ((-1,0),(1,0)) else [DIRS[last]]
   while True:
@@ -116,7 +111,7 @@ def play(mode,spd,best):
     rest=snake if grow else snake[:-1]
     untongue(tg);tg=[]
     if nx<0 or nx>=COLS or ny<1 or ny>ROWS or n in rest or n in walls:
-      g={"apples":foods,"len":maxlen,"bugs":bugs,"spd":st[2],"lvl":lvl,"score":score,"mode":mode}
+      g={"apples":foods,"len":maxlen,"bugs":bugs,"spd":st[2],"score":score,"mode":mode}
       return score,snake,d,cols,g
     if not grow:
       t=snake.pop();cols.pop();cellg(t)
@@ -147,25 +142,8 @@ def play(mode,spd,best):
         bc=place(snake,walls,(food,));bt=BUG_LIFE;bw=80;bug(bc);box(300,3,80,6,BUG)
     elif mv%2==0:
       cellg(food);apple(food,mv%4==0)
-    if score!=st[0]:
-      bar(st,BAND);st[0]=score;bar(st,WHITE)
-    if grow and foods%10==0:
-      bar(st,BAND);lvl+=1;st[3]=lvl
-      if st[2]<9:
-        st[2]+=1
-      bar(st,WHITE);untongue(tg);tg=[]
-      if bc is not None:
-        cellg(bc);bc=None;box(300,3,80,6,BAND)
-      overlay([("LEVEL "+str(lvl),72,BAND,"large"),("Speed "+str(st[2])+" - food = "+str(st[2])+" pts",106,TXT,"small")],
-              DELAY*40,snake,d,cols,food,walls,None)
-      if mode==2:
-        walls=maze(lvl);snake=list(START);d=(1,0);queue=[];cols=mkcols(3)
-        food=place(snake,walls,());board(snake,d,cols,food,walls,st)
-        last=ready()
-        if DIRS[last] not in ((-1,0),(1,0)):
-          queue=[DIRS[last]]
-      else:
-        last=getkey()
+    if score!=st[0] or foods!=st[3]:
+      bar(st,BAND);st[0]=score;st[3]=foods;bar(st,WHITE)
     show_screen()
 def death(snake,d,cols):
   for i in range(3):
@@ -182,28 +160,42 @@ def death(snake,d,cols):
       show_screen()
   poof(snake[0],CUR[0]);show_screen()
   ghost(snake[0],6,DELAY*3)
-def menu_text(mode,spd,sk,row,best):
-  t=[("> " if r==row else "  ")+["Mode   <  "+MODES[mode]+"  >","Speed  <  "+str(spd)+"  >","Skin   <  "+SKINS[sk][0]+"  >"][r] for r in range(3)]
-  t.append("Food = "+str(spd)+" pts     Best: "+str(best[mode]))
-  return t
+def mrow(r,v,how):
+  y=58+r*20;sel=how=="sel"
+  col=WHITE if how=="off" else (CUR[0] if sel else TXT)
+  box(64,y+3,10,10,WHITE) if not sel else cursor(64,y+3,CUR[0])
+  draw_string(84,y,["Mode","Speed","Skin"][r],col,"medium")
+  draw_string(244-len(v[r])*4,y,v[r],col,"medium")
+  tri(178,y+3,-1,col if sel else WHITE);tri(304,y+3,1,col if sel else WHITE)
+def info(mode,spd,best,col):
+  t=DESC[mode]+"  -  "+str(spd)+" pts/apple  -  Best "+str(best[mode])
+  draw_string(192-len(t)*3,121,t,col,"small")
+def skinparts():
+  logo();draw_snake([(x,3) for x in range(19,11,-1)],(1,0),mkcols(7));apple((22,3))
+  frame(48,52,288,88,LINE);frame(50,54,284,84,CUR[0])
+  x=chip(58,146,"EXE",CUR[0]);draw_string(x,146,"Start",TXT,"small")
+  x=chip(160,146,"OK",CUR[0]);draw_string(x,146,"Stats",TXT,"small")
+  x=chip(256,146,"AC",CUR[0]);draw_string(x,146,"Quit",TXT,"small")
 def title(mode,spd,sk,best):
   skin(sk);GRASS[0]=False;menubg()
   draw_string(286,40,"by Bilal Taha",GREY,"small")
-  frame(56,52,272,92,LINE);frame(58,54,268,88,BAND)
-  draw_string(28,152,"Up/Down choose  Left/Right change",GREY,"small")
-  draw_string(30,166,"EXE = start",BAND,"medium");draw_string(230,166,"OK = stats",BAND,"medium")
+  draw_string(88,166,"Up/Down select    Left/Right change",SOFT,"small")
   row=0;old=None
   while True:
-    txt=menu_text(mode,spd,sk,row,best)
-    if txt!=old:
-      for r in range(4):
-        sz="medium" if r<3 else "small"
-        if old:
-          draw_string(68,60+r*21,old[r],WHITE,sz)
-        draw_string(68,60+r*21,txt[r],(RED if r==row else TXT) if r<3 else GREY,sz)
-      if old is None or old[2]!=txt[2]:
-        skin(sk);logo();draw_snake([(x,3) for x in range(19,11,-1)],(1,0),mkcols(7));apple((22,3))
-      show_screen();old=txt
+    v=[MODES[mode],str(spd),SKINS[sk][0]]
+    cur=(mode,spd,sk,row)
+    if cur!=old:
+      if old:
+        ov=[MODES[old[0]],str(old[1]),SKINS[old[2]][0]]
+        for r in range(3):
+          mrow(r,ov,"off")
+        info(old[0],old[1],best,WHITE)
+      if old is None or old[2]!=sk:
+        skin(sk);skinparts()
+      for r in range(3):
+        mrow(r,v,"sel" if r==row else "on")
+      info(mode,spd,best,GREY)
+      show_screen();old=cur
     k=getkey()
     if k==UP or k==DOWN:
       row=(row+(1 if k==DOWN else -1))%3;wait_release(k)
@@ -221,15 +213,26 @@ def title(mode,spd,sk,best):
     elif k==EXE:
       wait_release(k);skin(sk);return mode,spd,sk
 def stats(best):
-  clear_screen();band();draw_string(150,0,"STATS",WHITE,"small")
+  clear_screen();band();h=CUR[0]
+  draw_string(170,0,"STATS",WHITE,"small");draw_string(300,0,"by Bilal Taha",(170,200,170),"small")
   S=STATS
-  draw_string(10,18,"Games "+str(S["games"])+"   Apples "+str(S["apples"])+"   Bugs "+str(S["bugs"]),TXT,"small")
-  draw_string(10,32,"Longest "+str(S["longest"])+"   Best  C:"+str(best[0])+"  W:"+str(best[1])+"  M:"+str(best[2]),TXT,"small")
-  draw_string(10,50,"ACHIEVEMENTS  "+str(sum(GOT))+"/8",BAND,"medium")
+  for i,(lab,val) in enumerate((("Games",S["games"]),("Apples",S["apples"]),("Bugs",S["bugs"]),("Longest",S["longest"]))):
+    x=6+i*95
+    frame(x,16,88,36,LINE);box(x+1,17,86,3,h)
+    v=str(val);draw_string(x+44-len(v)*5,18,v,TXT,"large")
+    draw_string(x+44-len(lab)*3,39,lab,GREY,"small")
+  t="Best   Classic "+str(best[0])+"    Wrap "+str(best[1])+"    Maze "+str(best[2])
+  draw_string(192-len(t)*3,56,t,TXT,"small")
+  n=sum(GOT)
+  draw_string(6,70,"ACHIEVEMENTS",h,"medium");draw_string(132,72,str(n)+" / 8",GREY,"small")
+  frame(190,74,188,8,LINE);box(191,75,186*n//8,6,GOLD)
   for i in range(8):
-    draw_string(10,68+i*12,("[x] " if GOT[i] else "[ ] ")+ACH[i][0]+" - "+ACH[i][1],GOLD if GOT[i] else GREY,"small")
-  draw_string(10,164,"Note: stats reset when you quit or power off!",RED,"small")
-  draw_string(10,178,"made by Bilal Taha",GREY,"small");draw_string(280,178,"OK = back",BAND,"small")
+    x=6+(i%2)*190;y=88+(i//2)*22
+    tick(x,y+2,GOT[i])
+    draw_string(x+16,y,ACH[i][0],GREEN if GOT[i] else GREY,"small")
+    draw_string(x+16,y+10,ACH[i][1],SOFT,"small")
+  draw_string(6,180,"Stats reset when you quit or power off",RED,"small")
+  x=chip(300,179,"OK",h);draw_string(x,180,"Back",TXT,"small")
   show_screen()
   while getkey()!=OK:
     pass
@@ -238,7 +241,7 @@ def game_over(score,best,newbest,g,new):
   panel(62,36,260,124)
   shadow(116,44,"GAME OVER",RED)
   draw_string(90,78,"Score "+str(score)+"    Best "+str(best),TXT,"medium")
-  draw_string(90,98,"Length "+str(g["len"])+"   Level "+str(g["lvl"])+"   Bugs "+str(g["bugs"]),GREY,"small")
+  draw_string(90,98,"Length "+str(g["len"])+"   Apples "+str(g["apples"])+"   Bugs "+str(g["bugs"]),GREY,"small")
   y=112
   if newbest:
     draw_string(155,y,"NEW BEST!",GOLD,"small");y+=11
