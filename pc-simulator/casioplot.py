@@ -13,6 +13,7 @@ KEYMAP = {"Up": 14, "Down": 34, "Left": 23, "Right": 25, "Return": 95, "KP_Enter
 
 _img = Image.new("RGB", (W, H), (255, 255, 255))
 _draw = ImageDraw.Draw(_img)
+_draw.fontmode = "1"  # sharp pixel text like the calculator (no smoothing leftovers)
 _held = []
 
 def _font(px):

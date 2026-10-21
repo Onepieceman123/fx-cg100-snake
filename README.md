@@ -1,18 +1,22 @@
 # 🐍 Snake for the Casio fx-CG100
 
+![Snake for the Casio fx-CG100 by Bilal Taha](screenshots/banner.png)
+
 **A Nokia *Snake II*-style game for the Casio fx-CG100 (ClassWiz CG) graphing calculator, made by Bilal Taha.**
 
 It's written in MicroPython with Casio's built-in `casioplot` module, so it runs on a **normal, unmodified calculator**. No jailbreak, add-ins or MPM needed.
 
-![Title screen](screenshots/title.png)
+<p align="center"><img src="screenshots/gameplay.gif" alt="Snake gameplay" width="768"></p>
 
-| Gameplay | Game over |
-|---|---|
-| ![Maze mode](screenshots/gameplay.png) | ![Game over](screenshots/gameover.png) |
+| Title screen | Maze mode | Game over |
+|---|---|---|
+| ![Title screen](screenshots/title.png) | ![Maze mode](screenshots/maze.png) | ![Game over](screenshots/gameover.png) |
+
+**9 skins**, and the logo changes colour to match:
 
 ![The 9 skins](screenshots/skins.png)
 
-*Screenshots are from the PC simulator, so the font differs slightly from the real calculator.*
+<sub>Images are from the PC simulator, so the text font differs slightly from the real calculator.</sub>
 
 ---
 
